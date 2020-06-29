@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,9 +23,8 @@ public class PlayerHit : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D col){
 		if (col.tag == "PlayerHB") {
-			//col.gameObject.SendMessageUpwards ("Damage");
 			col.transform.parent.GetComponent<PlayerHealth> ().Damage(2);
-			col.gameObject.SendMessageUpwards ("Hit");
+			col.gameObject.SendMessageUpwards("Hit");
 
 			if (Random.value >= 0.5f) {
 				RB.AddForce (Vector2.up * (jumpDist * 1.3f));
@@ -33,8 +33,9 @@ public class PlayerHit : MonoBehaviour {
 				RB.AddForce (Vector2.up * (jumpDist * 1.3f));
 				RB.AddForce (Vector2.left * (jumpDist * 1.3f));
 			}
-
 		}
+
+		if(col.transform.parent == null) return;
 
 		if (col.transform.parent.tag == "saw") {
 			ai.isDead = true;

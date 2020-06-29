@@ -148,6 +148,8 @@ public class SawAI : MonoBehaviour {
 			Destroy (col.gameObject);
 		}
 
+		if(col.collider.transform.parent == null) return;
+
 		if (col.collider.transform.parent.tag == "saw") {
 			Destroy (transform.parent.gameObject);
 		}

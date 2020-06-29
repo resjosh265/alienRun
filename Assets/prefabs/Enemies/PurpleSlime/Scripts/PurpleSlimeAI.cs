@@ -5,22 +5,21 @@ using UnityEngine;
 public class PurpleSlimeAI : MonoBehaviour {
 
 	public bool debugMode;
+	public float jumpDist = 300f;
+	public float jumpTime = 4f;
+	private float jumpTimer;
+	public float jumpSpeed = 1f;
+	public float playerDetectRange = 10f;
+
+	private float speedTimer;
+	private bool hasJumped;
 
 	private Rigidbody2D mainBody;
 	private GameObject player;
 	private SpriteRenderer rend;
 	private Animator anim;
 	private SoundController sound;
-
-	public float jumpDist = 300f;
-	public float jumpTime = 4f;
-	private float jumpTimer;
-	public float jumpSpeed = 1f;
-	private float speedTimer;
-
-	public float playerDetectRange = 10f;
-
-	private bool hasJumped;
+	
 	[HideInInspector]
 	public bool isDead;
 
@@ -30,20 +29,20 @@ public class PurpleSlimeAI : MonoBehaviour {
 		mainBody = GetComponentInParent<Rigidbody2D> ();
 		rend = GetComponentInParent<SpriteRenderer> ();
 		anim = GetComponentInParent<Animator> ();
-		player = GameObject.Find ("Player");
-		sound = GameObject.Find ("AudioController").GetComponent<SoundController> ();
+		player = GameObject.Find("Player");
+		sound = GameObject.Find("AudioController").GetComponent<SoundController>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		//if debug mode is enabled, ignore the jumptimer and jump when Z is pressed
-		if (debugMode == true) {
+		if (debugMode) {
 			if (Input.GetKeyDown (KeyCode.Z)) {
 				hasJumped = true;
 			}
 		} else {
 			//if slime is not dead allow everything to run
-			if (isDead == false) {
+			if (!isDead) {
 				//timer that counts up for jump
 				jumpTimer += Time.deltaTime;
 
@@ -55,11 +54,11 @@ public class PurpleSlimeAI : MonoBehaviour {
 		}
 
 		//run the jump function
-		if (hasJumped == true) {
+		if (hasJumped) {
 			Jump ();
 		}
 
-		if (isDead == true) {
+		if (isDead) {
 			Die ();
 		}
 
@@ -68,7 +67,7 @@ public class PurpleSlimeAI : MonoBehaviour {
 
 	void Jump(){
 		
-		if (hasJumped == true) {
+		if (hasJumped) {
 			//find the direction of the player
 			Vector2 direction = transform.position - player.transform.position;
 			//find the distance of the player
@@ -138,6 +137,7 @@ public class PurpleSlimeAI : MonoBehaviour {
 		if (col.tag == "saw" || col.tag == "spikes") {
 			isDead = true;
 		}
+
 		//if the slime is jumped on by the player
 		if (col.tag == "Player") {
 			isDead = true;
@@ -153,13 +153,12 @@ public class PurpleSlimeAI : MonoBehaviour {
 		}
 
 		if (col.gameObject.tag == "ground") {
-			if (isDead == false) {
-				if (Vector2.Distance (player.transform.position, transform.position) < 13) {
-					sound.SlimeSplatSound ();
+			if (!isDead) {
+				if(player == null) return;
+				if (Vector2.Distance(player.transform.position, transform.position) < 13) {
+					sound.SlimeSplatSound();
 				}
 			}
 		}
-			
-
 	}
 }
